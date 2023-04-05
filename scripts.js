@@ -22,7 +22,7 @@ playButton.addEventListener("click", () => {
     file.appendTo(videoContainer, {
       autoplay: true,
       controls: true,
-      maxBlobLength: 1000 * 1000 * 1000, // 1 GB
+      maxBlobLength: 10 * 1000 * 1000 * 1000, // 10 GB
     }, (err) => {
       if (err) {
         console.error(err);
