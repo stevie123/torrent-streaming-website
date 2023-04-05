@@ -8,28 +8,35 @@ playButton.addEventListener("click", () => {
         alert("Please enter a valid magnet link.");
         return;
     }
-    playTorrent(magnetURI);
-});
+  function playTorrent(magnetURI) {
+  const client = new WebTorrent();
 
-function playTorrent(magnetURI) {
-    const client = new WebTorrent();
+  client.add(magnetURI, (torrent) => {
+    const file = torrent.files.find((file) => file.name.endsWith(".mp4"));
 
-    client.add(magnetURI, (torrent) => {
-        const file = torrent.files.find((file) => file.name.endsWith(".mp4"));
+    if (!file) {
+      alert("No suitable video file found in the torrent.");
+      return;
+    }
 
-        if (!file) {
-            alert("No suitable video file found in the torrent.");
-            return;
-        }
+    file.appendTo(videoContainer, {
+      autoplay: true,
+      controls: true,
+      maxBlobLength: 1000 * 1000 * 1000, // 1 GB
+    }, (err) => {
+      if (err) {
+        console.error(err);
+        alert("An error occurred while playing the video.");
+      }
+    });
+  });
 
-        file.renderTo("video", {
-            autoplay: true,
-            controls: true,
-        }, (err) => {
-            if (err) {
-                console.error(err);
-                alert("An error occurred while playing the video.");
-            }
+  client.on('error', (err) => {
+    console.error('WebTorrent client error:', err);
+    alert("An error occurred with the WebTorrent client.");
+  });
+}
+
         });
     });
 }
